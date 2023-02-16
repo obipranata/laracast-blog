@@ -21,7 +21,9 @@ Route::get('/', function () {
 
     // $files = File::files(resource_path("posts/"));
 
-    $posts = Post::latest('id')->with('category', 'author')->get();
+    $posts = Post::latest('id')->get();
+    $categories = Category::all();
+    // $posts = Post::latest('id')->with('category', 'author')->get();
 
     // $posts = array_map(function($file){
     //     $document = YamlFrontMatter::parseFile($file);
@@ -35,7 +37,8 @@ Route::get('/', function () {
     // }, $files);
 
     return view('posts', [
-        'posts' => $posts
+        'posts' => $posts,
+        'categories' => $categories
     ]);
 });
 
@@ -46,13 +49,20 @@ Route::get('/post/{post:slug}', function(Post $post){
 });
 
 Route::get('/categories/{category:slug}', function(Category $category){
+    $categories = Category::all();
     return view ('posts', [
-        'posts' => $category->posts->load(['category', 'author'])
+        'posts' => $category->posts,
+        // 'posts' => $category->posts->load(['category', 'author']),
+        'categories' => $categories,
+        'currentCategory' => $category
     ]);
 });
 
 Route::get('/authors/{author:username}', function(User $author){
+    $categories = Category::all();
     return view ('posts', [
-        'posts' => $author->posts->load(['category', 'author'])
+        'posts' => $author->posts,
+        // 'posts' => $author->posts->load(['category', 'author']),
+        'categories' => $categories
     ]);
 });
